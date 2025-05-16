@@ -1,38 +1,69 @@
-
-import os
-import time
 import requests
 import pandas as pd
-from dotenv import load_dotenv
-from config import (
-    TAO_API_BASE,
-    TAO_APP_API_KEY,
-    TAO_APP_RATE_LIMIT_SECONDS,
-    ENABLE_RATE_LIMITING
-)
+from datetime import datetime, timedelta
+from sqlalchemy import create_engine, Column, Integer, Text, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from config import TAO_API_BASE, TAO_APP_API_KEY, DATABASE_URI, CACHE_DEFAULT_TIMEOUT
 
-load_dotenv()
+# SQLAlchemy setup
+engine = create_engine(DATABASE_URI, connect_args={'check_same_thread': False})
+SessionLocal = sessionmaker(bind=engine)
+Base = declarative_base()
+
+class SubnetInfoCache(Base):
+    __tablename__ = 'subnet_info'
+    netuid = Column(Integer, primary_key=True, index=True)
+    data = Column(Text)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+
+class SubnetScreenerCache(Base):
+    __tablename__ = 'subnet_screener'
+    netuid = Column(Integer, primary_key=True, index=True)
+    data = Column(Text)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+
+# Create tables
+Base.metadata.create_all(bind=engine)
+
 HEADERS = {"X-API-Key": TAO_APP_API_KEY}
 
-def rate_limited_fetch(endpoint: str, params: dict = None):
+def fetch_and_cache_json(endpoint: str, cache_model):
     """
-    Universal wrapper for GET requests to TAO.app API with optional rate limiting.
+    Fetch JSON from TAO.app API and cache in SQL database for CACHE_DEFAULT_TIMEOUT seconds.
     """
-    url = f"{TAO_API_BASE}{endpoint}"
+    session = SessionLocal()
+    cutoff = datetime.utcnow() - timedelta(seconds=CACHE_DEFAULT_TIMEOUT)
+    # Check cache
+    recent = session.query(cache_model).filter(cache_model.updated_at > cutoff).all()
+    if recent:
+        data = [eval(rec.data) for rec in recent]
+    else:
+        url = f"{TAO_API_BASE}{endpoint}"
+        resp = requests.get(url, headers=HEADERS)
+        resp.raise_for_status()
+        data = resp.json()
+        # Refresh cache
+        session.query(cache_model).delete()
+        for item in data:
+            rec = cache_model(netuid=item['netuid'], data=str(item), updated_at=datetime.utcnow())
+            session.add(rec)
+        session.commit()
+    session.close()
+    return data
 
-    if ENABLE_RATE_LIMITING:
-        time.sleep(TAO_APP_RATE_LIMIT_SECONDS)
-
-    response = requests.get(url, headers=HEADERS, params=params or {})
-
-    if response.status_code != 200:
-        raise requests.HTTPError(
-            f"API Error {response.status_code}: {response.text}",
-            response=response
-        )
-
-    return response.json()
-
-def fetch_subnet_info():
-    data = rate_limited_fetch("/api/beta/analytics/subnets/info")
-    return pd.DataFrame(data)
+def fetch_combined_subnet_data():
+    """Fetch and merge subnet_info and subnet_screener data."""
+    info_list = fetch_and_cache_json('/api/beta/analytics/subnets/info', SubnetInfoCache)
+    screener_list = fetch_and_cache_json('/api/beta/subnet_screener', SubnetScreenerCache)
+    print("Subnet info API response:", info_list[0] if info_list else "No data")
+    print("Subnet screener API response:", screener_list[0] if screener_list else "No data")
+    df_info = pd.DataFrame(info_list)
+    df_scr = pd.DataFrame(screener_list)
+    print("Info DataFrame columns:", df_info.columns.tolist())
+    print("Screener DataFrame columns:", df_scr.columns.tolist())
+    merged_df = pd.merge(df_info, df_scr, on='netuid', how='outer', suffixes=('_info', '_screener'))
+    print("Merged DataFrame columns:", merged_df.columns.tolist())
+    print("First few rows of merged DataFrame:")
+    print(merged_df.head())
+    return merged_df
