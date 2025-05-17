@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 
 load_dotenv()
 
@@ -22,7 +23,11 @@ CACHE_DIR = os.getenv("CACHE_DIR", "./cache")       # Used if CACHE_TYPE == 'fil
 CACHE_DEFAULT_TIMEOUT = int(os.getenv("CACHE_DEFAULT_TIMEOUT", "300"))  # in seconds
 
 # === Database Configuration ===
-DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///tao_cache.db")
+# Handle Heroku's PostgreSQL URL format
+database_url = os.getenv("DATABASE_URL", "sqlite:///tao_cache.db")
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+DATABASE_URI = database_url
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # === Rate Limiting (disabled with caching) ===
