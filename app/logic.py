@@ -1,5 +1,5 @@
 import pandas as pd
-from config import SUBNET_SCORING_WEIGHTS as W
+from app.config import SUBNET_SCORING_WEIGHTS as W
 
 def compute_basic_subnet_score(df: pd.DataFrame) -> pd.DataFrame:
     """Add 'score' column based on normalized metrics including market cap."""

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import create_engine, Column, Integer, Text, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from config import TAO_API_BASE, TAO_APP_API_KEY, DATABASE_URI, CACHE_DEFAULT_TIMEOUT
+from app.config import TAO_API_BASE, TAO_APP_API_KEY, DATABASE_URI, CACHE_DEFAULT_TIMEOUT
 
 # SQLAlchemy setup
 engine = create_engine(DATABASE_URI, connect_args={'check_same_thread': False})
