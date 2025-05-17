@@ -9,7 +9,8 @@ SQLAlchemy==2.0.28
 Flask==3.0.2
 gunicorn==23.0.0
 markdown2==2.5.3
-psycopg2-binary==2.9.9  # PostgreSQL adapter for Python
+psycopg2==2.9.9  # PostgreSQL adapter for Python (pure Python implementation)
+psycopg2-binary==2.9.9  # PostgreSQL adapter for Python (pre-compiled binary)
 
 # Security updates
 cryptography==44.0.1
