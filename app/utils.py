@@ -25,7 +25,7 @@ class SubnetScreenerCache(Base):
     updated_at = Column(DateTime, default=datetime.utcnow)
 
 # Create tables
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine, checkfirst=True)
 
 HEADERS = {"X-API-Key": TAO_APP_API_KEY}
 
