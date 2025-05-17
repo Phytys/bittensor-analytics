@@ -21,3 +21,12 @@ def blog_post(slug):
         abort(404)
     return render_template('blog_post.html', title=title, content=html)
 
+@main.app_errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html', title="Page Not Found"), 404
+
+@main.app_errorhandler(500)
+def internal_error(error):
+    logging.error(f"Server Error: {error}")
+    return render_template('500.html', title="Server Error"), 500
+

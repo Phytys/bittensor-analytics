@@ -3,8 +3,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def get_required_env(key: str, default=None):
+    """Get required environment variable or raise error if not set."""
+    value = os.getenv(key, default)
+    if value is None:
+        raise RuntimeError(f"Required environment variable {key} is not set")
+    return value
+
 # === API Keys ===
-TAO_APP_API_KEY = os.getenv("TAO_APP_API_KEY")
+TAO_APP_API_KEY = get_required_env("TAO_APP_API_KEY")
 
 # === API Base URL ===
 TAO_API_BASE = "https://api.tao.app"
@@ -15,8 +22,7 @@ CACHE_DIR = os.getenv("CACHE_DIR", "./cache")       # Used if CACHE_TYPE == 'fil
 CACHE_DEFAULT_TIMEOUT = int(os.getenv("CACHE_DEFAULT_TIMEOUT", "300"))  # in seconds
 
 # === Database Configuration ===
-# Using SQLite for simplicity; can switch via DATABASE_URI env var (e.g., Postgres on Heroku)
-DATABASE_URI = os.getenv("DATABASE_URI", "sqlite:///tao_cache.db")
+DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///tao_cache.db")
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # === Rate Limiting (disabled with caching) ===
