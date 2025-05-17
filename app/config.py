@@ -22,6 +22,13 @@ CACHE_TYPE = os.getenv("CACHE_TYPE", "filesystem")  # Options: 'filesystem', 're
 CACHE_DIR = os.getenv("CACHE_DIR", "./cache")       # Used if CACHE_TYPE == 'filesystem'
 CACHE_DEFAULT_TIMEOUT = int(os.getenv("CACHE_DEFAULT_TIMEOUT", "300"))  # in seconds
 
+# === Rate Limiting Configuration ===
+ENABLE_RATE_LIMITING = True  # Always enabled in production
+RATE_LIMITS = {
+    "default": "60/minute",  # Default rate limit
+    "blog": "30/minute",     # Blog-specific rate limit
+}
+
 # === Database Configuration ===
 # Handle Heroku's PostgreSQL URL format
 database_url = os.getenv("DATABASE_URL", "sqlite:///tao_cache.db")
@@ -29,11 +36,6 @@ if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
 DATABASE_URI = database_url
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-# === Rate Limiting (disabled with caching) ===
-ENABLE_RATE_LIMITING = False
-TAO_APP_RATE_LIMIT_PER_MIN = 10
-TAO_APP_RATE_LIMIT_SECONDS = 60 / TAO_APP_RATE_LIMIT_PER_MIN
 
 # === Scoring Weights ===
 SUBNET_SCORING_WEIGHTS = {
