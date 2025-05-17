@@ -7,7 +7,8 @@ from sqlalchemy.orm import sessionmaker
 from app.config import TAO_API_BASE, TAO_APP_API_KEY, DATABASE_URI, CACHE_DEFAULT_TIMEOUT
 
 # SQLAlchemy setup
-engine = create_engine(DATABASE_URI, connect_args={'check_same_thread': False})
+connect_args = {'check_same_thread': False} if DATABASE_URI.startswith('sqlite') else {}
+engine = create_engine(DATABASE_URI, connect_args=connect_args)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
