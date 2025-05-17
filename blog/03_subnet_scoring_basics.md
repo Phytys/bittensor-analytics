@@ -1,11 +1,10 @@
-
 # Chapter 3: Subnet Scoring — Our First Model
 
 In the previous chapter, we examined the fundamental structure of each subnet — from its TAO holdings and price to metadata like GitHub links and community presence. Now, we take our first step into building something more opinionated:
 
 > A scoring model to assess and rank Bittensor subnets using a blend of fundamentals and momentum.
 
-This score isn't meant to be perfect or absolute. It’s meant to be **interpretable**, **data-driven**, and evolve over time. Phase 1 focuses on a simple yet insightful version of this score.
+This score isn't meant to be perfect or absolute. It's meant to be **interpretable**, **data-driven**, and evolve over time. Phase 1 focuses on a simple yet insightful version of this score.
 
 ---
 
@@ -50,12 +49,12 @@ The interactive dashboard now includes:
 - A **sortable table** showing all available columns
 - A **cached backend** powered by SQLite and SQLAlchemy
 
-_(📸 Screenshot of current dashboard here)_
+![Dashboard Screenshot](/static/blog-images/dashboard_01.png)
 
 ---
 
 ## ⏭️ Up Next
 
-Now that we’ve defined a baseline score and visualized it, the next step is to reflect on **why we chose these fields**, what the screener API offers, and how our model can grow.
+Now that we've defined a baseline score and visualized it, the next step is to reflect on **why we chose these fields**, what the screener API offers, and how our model can grow.
 
-In Chapter 4, we’ll break down the screener dataset and explain why we excluded many fields — for now.
+In Chapter 4, we'll break down the screener dataset and explain why we excluded many fields — for now.

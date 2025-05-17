@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{{ title }}{% endblock %} - Bittensor Subnet Analytics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header style="text-align: center; padding-top: 20px;">
+    <img src="/static/logo.png" alt="Logo" style="height: 80px;" />
+    <h1 style="margin-top: 10px;">Bittensor Subnet Analytics</h1>
+    <nav style="margin-top: 10px;">
+      <a href="/">Home</a> |
+      <a href="/dashboard/">Dashboard</a> |
+      <a href="/blog">Blog</a>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html> 

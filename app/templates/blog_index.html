@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="blog-index">
+  <div class="blog-header">
+    <h1>Research Journal</h1>
+    <p class="blog-description">Exploring Bittensor subnet analytics, scoring models, and market insights</p>
+  </div>
+  
+  <div class="blog-posts">
+    {% for post in posts %}
+    <article class="blog-preview">
+      <div class="blog-preview-content">
+        <h2>
+          <a href="{{ url_for('main.blog_post', slug=post.slug) }}">
+            <span class="chapter-number">{{ post.chapter }}</span>
+            {{ post.title }}
+          </a>
+        </h2>
+        {% if post.date %}
+        <div class="post-meta">
+          <span class="post-date">{{ post.date.strftime('%B %d, %Y') }}</span>
+        </div>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

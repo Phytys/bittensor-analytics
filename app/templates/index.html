@@ -1,20 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>{{ title }}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-  <header>
-    <h1>Bittensor Subnet Analytics</h1>
-    <nav>
-      <a href="/dashboard/">Dashboard</a> |
-      <a href="/blog">Blog (coming soon)</a>
-    </nav>
-  </header>
-  <main>
-    <p>Welcome to the Bittensor Subnet Analytics platform. Explore the live dashboard or read our research journal.</p>
-  </main>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<div class="landing-page">
+  <section class="hero">
+    <h1>Welcome to Bittensor Subnet Analytics</h1>
+    <p class="tagline">Your window into the decentralized AI marketplace</p>
+  </section>
+
+  <section class="features">
+    <div class="feature-card">
+      <h2>📊 Live Dashboard</h2>
+      <p>Explore real-time metrics and rankings of Bittensor subnets. Track TAO holdings, market caps, and more.</p>
+      <a href="/dashboard/" class="button">View Dashboard</a>
+    </div>
+
+    <div class="feature-card">
+      <h2>📚 Research Journal</h2>
+      <p>Deep dive into our analysis of subnet performance, scoring methodology, and market insights.</p>
+      <a href="/blog" class="button">Read Blog</a>
+    </div>
+  </section>
+
+  <section class="about">
+    <h2>About This Project</h2>
+    <p>Bittensor Subnet Analytics provides transparent, data-driven insights into the Bittensor ecosystem. We combine on-chain metrics with market data to help you understand subnet performance and potential.</p>
+    <p>Our scoring model evaluates subnets based on multiple factors including:</p>
+    <ul class="feature-list">
+      <li>TAO holdings and liquidity</li>
+      <li>Market capitalization</li>
+      <li>Price momentum</li>
+      <li>Development activity</li>
+      <li>Project maturity</li>
+    </ul>
+  </section>
+</div>
+{% endblock %}
