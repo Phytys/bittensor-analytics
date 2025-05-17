@@ -34,7 +34,7 @@ app.layout = html.Div([
             options=[
                 {'label': 'Score', 'value': 'score'},
                 {'label': 'TAO In', 'value': 'tao_in_screener'},
-                {'label': 'Price', 'value': 'price_screener'},
+                {'label': 'Market Cap (TAO)', 'value': 'market_cap_proxy'},
                 {'label': '7d Price % Change', 'value': 'price_7d_pct_change'}
             ],
             value='score',
@@ -64,10 +64,6 @@ app.layout = html.Div([
 )
 def update_dashboard(selected_metric):
     df = pd.read_json(load_subnet_data(), orient='split')
-    print("DataFrame columns in callback:", df.columns.tolist())
-    print("Selected metric:", selected_metric)
-    print("First few rows of DataFrame in callback:")
-    print(df.head())
     try:
         df_sorted = df.sort_values(by=selected_metric, ascending=False)
     except KeyError as e:
@@ -79,10 +75,10 @@ def update_dashboard(selected_metric):
         y=selected_metric,
         title=f"Top 15 Subnets by {selected_metric.replace('_', ' ').title()}",
         labels={
-            selected_metric: selected_metric.replace('_', ' ').title(),
+            selected_metric: selected_metric.replace('_', ' ').title().replace('Market Cap Proxy', 'Market Cap (TAO)'),
             'subnet_name_screener': 'Subnet Name'
         },
-        hover_data=['netuid', 'tao_in_screener', 'price_screener', 'score']
+        hover_data=['netuid', 'tao_in_screener', 'market_cap_proxy', 'price_screener', 'score']
     )
     table_columns = [{"name": col, "id": col} for col in df_sorted.columns]
     table_data = df_sorted.to_dict("records")

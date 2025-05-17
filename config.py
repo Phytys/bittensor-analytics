@@ -26,9 +26,9 @@ TAO_APP_RATE_LIMIT_SECONDS = 60 / TAO_APP_RATE_LIMIT_PER_MIN
 
 # === Scoring Weights ===
 SUBNET_SCORING_WEIGHTS = {
-    "tao_in": 0.20,
-    "norm_price": 0.10,
-    "price_7d_pct_change": 0.10,
-    "has_github": 0.05,
-    "has_website": 0.05,
+    "tao_in": 0.20,          # Liquidity weight
+    "market_cap": 0.15,      # Total value weight (renamed from norm_price)
+    "price_7d_pct_change": 0.10,  # Momentum weight
+    "has_github": 0.05,      # Development activity weight
+    "has_website": 0.05,     # Project maturity weight
 }

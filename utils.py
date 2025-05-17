@@ -56,14 +56,7 @@ def fetch_combined_subnet_data():
     """Fetch and merge subnet_info and subnet_screener data."""
     info_list = fetch_and_cache_json('/api/beta/analytics/subnets/info', SubnetInfoCache)
     screener_list = fetch_and_cache_json('/api/beta/subnet_screener', SubnetScreenerCache)
-    print("Subnet info API response:", info_list[0] if info_list else "No data")
-    print("Subnet screener API response:", screener_list[0] if screener_list else "No data")
     df_info = pd.DataFrame(info_list)
     df_scr = pd.DataFrame(screener_list)
-    print("Info DataFrame columns:", df_info.columns.tolist())
-    print("Screener DataFrame columns:", df_scr.columns.tolist())
     merged_df = pd.merge(df_info, df_scr, on='netuid', how='outer', suffixes=('_info', '_screener'))
-    print("Merged DataFrame columns:", merged_df.columns.tolist())
-    print("First few rows of merged DataFrame:")
-    print(merged_df.head())
     return merged_df

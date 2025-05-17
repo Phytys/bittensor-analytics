@@ -1,88 +1,80 @@
 
 # Chapter 4: Wrapping Up Phase 1 — Foundations, Scores, and What's Next
 
-With Phase 1 complete, we've built a solid, scalable dashboard that integrates real-time subnet data from the Bittensor network. We introduced a scoring model, cleaned and normalized data, and cached everything locally for efficiency. 
+With Phase 1 complete, we’ve established a scalable dashboard with real-time insights into Bittensor subnets. We’ve introduced a scoring model that merges fundamentals and trend signals. And we did it with caching, persistence, and a clean UI.
 
-But an important question remains: **Why did we choose those specific fields for the score?** What about the many other columns returned by the API?
+But that brings us to an important question...
 
-This chapter answers that — and maps the terrain for future upgrades.
+> Why did we include these specific metrics in the score? What about all the other fields available?
+
+Let’s dive deeper.
 
 ---
 
-## 🔌 The Subnet Screener API: Field Reference
+## 🔍 Screener API: Field Overview
 
-From `/api/beta/subnet_screener`, we receive a wide range of subnet metrics. Here's what they mean:
+From `/api/beta/subnet_screener`, we get a wide array of fields. Here's a subset:
 
 | Column                        | Description |
 |------------------------------|-------------|
-| `netuid`                     | Subnet identifier (primary key) |
-| `subnet_name`                | Human-readable subnet name |
-| `price`                      | Current Alpha token price (in TAO) |
-| `price_1h_pct_change`        | Price % change over the last 1 hour |
-| `price_1d_pct_change`        | Price % change over the last 1 day |
-| `price_7d_pct_change`        | Price % change over the last 7 days |
-| `price_1m_pct_change`        | Price % change over the last 30 days |
-| `alpha_in`, `alpha_out`      | Volume in/out of Alpha tokens |
-| `tao_in`                     | TAO staked into the subnet (TVL proxy) |
-| `emission_pct`               | % of total TAO emissions going to this subnet |
-| `unrealized_pnl`, `realized_pnl` | PnL metrics for Alpha holders |
-| `github_repo`, `subnet_website`, `discord` | Project metadata |
-| `root_prop`                  | Share of global root emissions |
-| ...                          | (and a few others we may explore later) |
+| `netuid`                     | Unique subnet ID |
+| `subnet_name`                | Human-readable name |
+| `price`                      | Alpha token price in TAO |
+| `tao_in`                     | Total TAO committed to the subnet |
+| `price_1h_pct_change`        | Price % change over 1 hour |
+| `price_1d_pct_change`        | Price % change over 1 day |
+| `price_7d_pct_change`        | Price % change over 7 days |
+| `price_1m_pct_change`        | Price % change over 30 days |
+| `alpha_in` / `alpha_out`     | Volume of Alpha tokens in/out |
+| `realized_pnl` / `unrealized_pnl` | Profit/loss tracking |
+| `github_repo`, `subnet_website`, `discord` | External metadata |
 
 ---
 
-## ✅ Fields Included in Our Basic Score
+## ✅ Why We Chose These Fields for the Score
 
-We selected a small, meaningful subset to define an early subnet score:
-
-| Feature             | Why We Included It |
-|---------------------|---------------------|
-| `tao_in`            | Capital allocation, community trust |
-| `price`             | Value signal, demand proxy |
-| `price_7d_pct_change` | Captures momentum, short-term trend |
-| `github_repo`       | Open-source presence & credibility |
-| `subnet_website`    | Communication, trust-building |
+| Field              | Reason |
+|--------------------|--------|
+| `tao_in`           | Represents investor/staker confidence |
+| `price × tao_in` (market cap) | Reflects value-weighted interest |
+| `price_7d_pct_change` | Captures short-term trend momentum |
+| `github_repo`      | Proxy for development transparency |
+| `subnet_website`   | Signals maturity, legitimacy |
 
 ---
 
-## 🤔 Why Not Use the Other Fields (Yet)?
+## 🧠 Why We Excluded the Rest (for Now)
 
-Great question. We plan to — but thoughtfully, and incrementally.
+- **Short-term price swings** (`1h`, `1d`) are too noisy for our score’s purpose
+- **PnL metrics** require more context (wallet size, time in market)
+- **Alpha volume** is interesting — but we may want to look at liquidity ratios instead
+- **Root emissions** and emission percent could be valuable later — but we're starting simple
 
-Some fields (e.g., `price_1h_pct_change`) are noisy or hyper-volatile, better suited for real-time trading dashboards. Others like `unrealized_pnl` and `alpha_in/out` are extremely valuable — but only in context, or when combined into higher-order metrics like "Liquidity Stability Score."
-
-By **starting simple**, we:
-- Avoid overfitting or noisy metrics
-- Build user trust by keeping the score interpretable
-- Lay the groundwork for more sophisticated models in Phase 2 and beyond
+> We're building a **foundation**, not a finished product.
 
 ---
 
-## 🧱 What We've Built So Far
+## 📌 What We’ve Built
 
-- 📥 Real-time data fetching from two key endpoints
-- 🧠 A scoring function built on normalized signals
-- 🗃️ Caching layer using SQLite and SQLAlchemy
-- 🚀 Flask-Caching for interactive, responsive UX
-- 📊 Plotly Dash frontend with graphs and tables
-- 📸 Snapshot of the dashboard inserted into Chapter 3
-- 📚 Documentation alongside development
+- 🔗 Real-time subnet data (cached and merged)
+- 🧠 A normalized, transparent scoring function
+- 🗂️ SQL-based caching with fallback to API
+- 📊 A clean, user-facing dashboard with interactive plots
+- 📘 Chapters 0–4 to document the journey
 
-This is our **baseline** — functional, fast, and extensible.
+This is Phase 1. A milestone. But not the end.
 
 ---
 
-## 📘 Up Next
+## 🚀 Looking Ahead
 
-In Phase 2, we’ll begin expanding our analysis in these directions:
-- 🪙 Alpha APY: Which subnets offer real yield?
-- 🐳 Holders: Are whales dominating, or is ownership decentralized?
-- ⚖️ Sustainability: Can emission rates be maintained long term?
-- 📈 Time Series: Visual trendlines with OHLC data
-- 🧠 Composite Index: Combine more metrics into tiered subnet profiles
+Phase 2 will include:
 
-> Our scoring model will evolve, but always remain explainable.
+- 🪙 Alpha APY (yield)
+- 🐋 Holder and decentralization data
+- 📈 Historical trend lines (OHLC)
+- ♻️ Emission sustainability scores
+- 💡 Customizable scoring models
 
-This book — and this codebase — will evolve with it.
+With each addition, our score — and our understanding — will grow.
 

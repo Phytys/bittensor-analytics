@@ -1,87 +1,61 @@
+
 # Chapter 3: Subnet Scoring — Our First Model
 
 In the previous chapter, we examined the fundamental structure of each subnet — from its TAO holdings and price to metadata like GitHub links and community presence. Now, we take our first step into building something more opinionated:
 
-> A basic scoring model to assess and rank Bittensor subnets.
+> A scoring model to assess and rank Bittensor subnets using a blend of fundamentals and momentum.
 
-While this model is just a starting point, it marks the transition from passive data display to active interpretation.
+This score isn't meant to be perfect or absolute. It’s meant to be **interpretable**, **data-driven**, and evolve over time. Phase 1 focuses on a simple yet insightful version of this score.
 
 ---
 
-## 🧮 What Is the Score?
+## 🧮 What's in the Score?
 
-The **score** is a weighted combination of key indicators we believe are early signals of subnet quality:
+The **score** is a weighted combination of signals we believe represent quality and potential. Here's what we're using:
 
 | Feature                 | Why We Use It |
 |-------------------------|-----------------------------|
-| `tao_in`                | Reflects trust, stake, and economic weight |
-| `price`                | A proxy for demand or perceived value |
-| `price_7d_pct_change`  | Measures recent trend or momentum |
-| GitHub link present     | Suggests open development and transparency |
-| Website present         | Indicates communication and credibility |
+| `tao_in_screener`       | Reflects stake and trust — how much TAO is committed to the subnet |
+| `market_cap_proxy`      | TAO-in × price — captures value-weighted interest |
+| `price_7d_pct_change`   | Measures recent trend and momentum |
+| `github_repo_screener`  | Suggests transparency and open development |
+| `subnet_website_screener` | Signals communication and project maturity |
 
-Each of these values is **normalized** to a 0–1 scale, and then combined using weighted coefficients (from `config.py`).
+Each field is normalized to a 0–1 scale before being combined into the final score.
 
 ---
 
-## ⚙️ Our First Scoring Formula
+## 🔢 The Scoring Formula
 
 ```python
 score = (
-    norm_tao_in       * 0.20 +
-    norm_price        * 0.10 +
-    norm_price_trend  * 0.10 +
-    has_github        * 0.05 +
-    has_website       * 0.05
+    norm(tao_in)           * 0.20 +
+    norm(market_cap)       * 0.15 +
+    norm(price_7d_change)  * 0.10 +
+    has_github             * 0.05 +
+    has_website            * 0.05
 )
 ```
 
-The weights are easy to adjust later. We keep them simple now so that each factor is understandable.
-
----
-
-## 🔗 Where Does the Data Come From?
-
-We combine two TAO.app API endpoints:
-
-- `/api/beta/analytics/subnets/info` → gives current TAO-in, price, metadata
-- `/api/beta/subnet_screener` → gives `price_7d_pct_change` and other deltas
-
-These datasets are merged using `netuid`, a unique identifier for each subnet.
+These weights are configurable and stored in `config.py`, allowing for easy experimentation in Phase 2.
 
 ---
 
 ## 📊 The Dashboard in Action
 
-The updated dashboard now includes:
+The interactive dashboard now includes:
 
-- A **dropdown menu** to select the metric to visualize
-- A **bar chart** showing top 15 subnets by the selected metric
-- A **sortable table** with all subnets and their scores
+- A **dropdown** to explore different metrics
+- A **bar chart** of the top 15 subnets by selected metric
+- A **sortable table** showing all available columns
+- A **cached backend** powered by SQLite and SQLAlchemy
 
-![Dashboard showing subnet metrics visualization](images/dashboard_01.png)
-
----
-
-## 🧭 What This Tells Us
-
-Even with this basic score, we already see useful patterns:
-
-- Subnets with large TAO-in but no GitHub rank lower than expected.
-- New subnets with fast price growth start surfacing near the top.
-- Dead or inactive subnets drop down the list naturally.
-
-This builds our confidence that even a simple scoring model can help surface insights that aren't obvious from raw values alone.
+_(📸 Screenshot of current dashboard here)_
 
 ---
 
-## ⏭️ Coming Up Next
+## ⏭️ Up Next
 
-Next, we'll start expanding the data model:
+Now that we’ve defined a baseline score and visualized it, the next step is to reflect on **why we chose these fields**, what the screener API offers, and how our model can grow.
 
-- Include APY data from `/apy/alpha`
-- Integrate whale tracking using `/holders`
-- Consider price sustainability and emission logic
-
-And we'll revisit our scoring formula with each new layer — evolving our model just like the network itself.
-
+In Chapter 4, we’ll break down the screener dataset and explain why we excluded many fields — for now.
