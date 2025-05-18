@@ -449,3 +449,46 @@ body {
     text-decoration: none;
   }
   
+  .status {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 40px 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+  
+  .status h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .status h2::before {
+    content: "📌";
+    font-size: 1.2em;
+  }
+  
+  .status p {
+    color: #666;
+    line-height: 1.6;
+    margin: 1rem 0;
+  }
+  
+  .status .feature-list {
+    margin: 1rem 0 1.5rem 1.5rem;
+  }
+  
+  .status .link {
+    color: #e31b23;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .status .link:hover {
+    text-decoration: underline;
+  }
+  
