@@ -492,3 +492,95 @@ body {
     text-decoration: underline;
   }
   
+  /* Footer styles */
+  .site-footer {
+    margin-top: 80px;
+    padding: 40px 20px;
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
+  }
+  
+  .footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .footer-content p {
+    margin: 10px 0;
+    color: #666;
+  }
+  
+  .footer-content a {
+    color: #e31b23;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .footer-content a:hover {
+    color: #c41820;
+    text-decoration: underline;
+  }
+  
+  .footer-note {
+    font-size: 0.9em;
+    color: #999;
+    margin-top: 20px;
+  }
+  
+  /* About Bittensor page styles */
+  .about-bittensor {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  
+  .about-bittensor .hero {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  
+  .about-bittensor .hero h1 {
+    font-size: 2.8em;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .about-bittensor .tagline {
+    font-size: 1.4em;
+    color: #666;
+    margin-bottom: 40px;
+  }
+  
+  .about-bittensor .content {
+    background: #f9f9f9;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+  
+  .about-bittensor h2 {
+    font-size: 1.8em;
+    margin: 1.5em 0 0.8em 0;
+    color: #333;
+  }
+  
+  .about-bittensor p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1.5em;
+  }
+  
+  .about-bittensor .cta {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+  }
+  
+  .about-bittensor .cta p {
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    color: #333;
+  }
+  

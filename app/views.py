@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, redirect, url_for
 from app.blog_utils import list_blog_posts, load_blog_post
 from app.limiter import limiter
 from app.config import RATE_LIMITS
@@ -30,6 +30,10 @@ def blog_post(slug):
 @limiter.exempt  # Health checks should never be rate limited
 def health_check():
     return {'status': 'healthy'}, 200
+
+@main.route('/about-bittensor')
+def about_bittensor():
+    return redirect(url_for('main.blog_post', slug='06-what_is_bittensor'))
 
 @main.app_errorhandler(404)
 def not_found_error(error):

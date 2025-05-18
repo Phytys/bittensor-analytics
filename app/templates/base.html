@@ -1,8 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>{% block title %}{{ title }}{% endblock %} - Bittensor Subnet Analytics</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Explore Bittensor's decentralized AI marketplace through real-time subnet analytics and scoring models." />
+  <meta name="keywords" content="bittensor, tao, decentralized AI, AI marketplace, subnet, analytics, crypto ai, open source" />
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="Bittensor Subnet Analytics" />
+  <meta property="og:description" content="Visualize the decentralized AI economy with live data and research insights." />
+  <meta property="og:image" content="/static/logo.png" />
+  <meta property="og:url" content="https://bittensor-analytics-03fff415a1ae.herokuapp.com/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
   <link rel="stylesheet" href="/static/style.css">
 </head>
@@ -13,11 +24,23 @@
     <nav style="margin-top: 10px;">
       <a href="/">Home</a> |
       <a href="/dashboard/">Dashboard</a> |
-      <a href="/blog">Blog</a>
+      <a href="/blog">Blog</a> |
+      <a href="/about-bittensor">What is Bittensor?</a>
     </nav>
   </header>
   <main>
     {% block content %}{% endblock %}
   </main>
+  <footer class="site-footer">
+    <div class="footer-content">
+      <p>
+        Follow us on:
+        <a href="https://github.com/Phytys/bittensor-analytics" target="_blank" rel="noopener">GitHub</a> |
+        <a href="https://x.com/_landgren_" target="_blank" rel="noopener">X</a> |
+        <a href="https://www.linkedin.com/in/glenn-landgren/" target="_blank" rel="noopener">LinkedIn</a>
+      </p>
+      <p class="footer-note">Open source project exploring the decentralized AI economy</p>
+    </div>
+  </footer>
 </body>
 </html> 
