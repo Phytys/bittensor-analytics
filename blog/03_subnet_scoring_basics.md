@@ -23,7 +23,7 @@ The **score** is a weighted combination of signals we believe represent quality 
 | Feature                 | Why We Use It |
 |-------------------------|-----------------------------|
 | `tao_in_screener`       | Reflects stake and trust — how much TAO is committed to the subnet |
-| `market_cap_proxy`      | TAO-in × price — captures value-weighted interest |
+| `market_cap_tao`        | The actual circulating Alpha market cap in TAO, provided by the tao.app screener API |
 | `price_7d_pct_change`   | Measures recent trend and momentum |
 | `github_repo_screener`  | Suggests transparency and open development |
 | `subnet_website_screener` | Signals communication and project maturity |
@@ -37,7 +37,7 @@ Each field is normalized to a 0–1 scale before being combined into the final s
 ```python
 score = (
     norm(tao_in)           * 0.20 +
-    norm(market_cap)       * 0.15 +
+    norm(market_cap_tao)   * 0.15 +
     norm(price_7d_change)  * 0.10 +
     has_github             * 0.05 +
     has_website            * 0.05

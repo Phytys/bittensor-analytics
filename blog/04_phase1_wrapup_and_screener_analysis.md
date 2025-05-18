@@ -1,9 +1,9 @@
 ---
 title: "Chapter 4: Wrapping Up Phase 1 — Foundations, Scores, and What's Next"
 date: "2024-03-20"
-description: "A comprehensive review of Phase 1: building a scalable analytics dashboard, implementing subnet scoring, and laying the groundwork for advanced market analysis in Bittensor's decentralized AI ecosystem."
+description: "A wrap-up of Phase 1, explaining our scoring model (using market_cap_tao) and our field choices from the tao.app screener API."
 author: "Bittensor Analytics Team"
-tags: ["bittensor", "analytics", "phase 1", "dashboard", "scoring", "market analysis", "decentralized AI", "roadmap", "screener"]
+tags: ["bittensor", "scoring", "analytics", "metrics", "subnet", "model", "data analysis", "sustainability", "health metrics", "wrap-up", "Phase 1", "screener API"]
 ---
 
 # Chapter 4: Wrapping Up Phase 1 — Foundations, Scores, and What's Next
@@ -27,6 +27,8 @@ From `/api/beta/subnet_screener`, we get a wide array of fields. Here's a subset
 | `netuid`                     | Unique subnet ID |
 | `subnet_name`                | Human-readable name |
 | `price`                      | Alpha token price in TAO |
+| `market_cap_tao`             | Alpha market cap (price × alpha_circ), TAO-denominated |
+| `alpha_circ`                 | Circulating supply of the alpha token |
 | `tao_in`                     | Total TAO committed to the subnet |
 | `price_1h_pct_change`        | Price % change over 1 hour |
 | `price_1d_pct_change`        | Price % change over 1 day |
@@ -43,10 +45,12 @@ From `/api/beta/subnet_screener`, we get a wide array of fields. Here's a subset
 | Field              | Reason |
 |--------------------|--------|
 | `tao_in`           | Represents investor/staker confidence |
-| `price × tao_in` (market cap) | Reflects value-weighted interest |
+| `market_cap_tao`   | Accurate, protocol-calculated value of the alpha token's economy |
 | `price_7d_pct_change` | Captures short-term trend momentum |
 | `github_repo`      | Proxy for development transparency |
 | `subnet_website`   | Signals maturity, legitimacy |
+
+We source this data from the [`/api/beta/subnet_screener`](https://api.tao.app/docs) endpoint.
 
 ---
 
@@ -64,7 +68,7 @@ From `/api/beta/subnet_screener`, we get a wide array of fields. Here's a subset
 ## 📌 What We've Built
 
 - 🔗 Real-time subnet data (cached and merged)
-- 🧠 A normalized, transparent scoring function
+- 🧠 A normalized, transparent scoring function (using market_cap_tao)
 - 🗂️ SQL-based caching with fallback to API
 - 📊 A clean, user-facing dashboard with interactive plots
 - 📘 Chapters 0–4 to document the journey

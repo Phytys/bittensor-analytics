@@ -29,7 +29,7 @@ def init_dashboard(server, cache):
                 options=[
                     {'label': 'Score', 'value': 'score'},
                     {'label': 'TAO In', 'value': 'tao_in_screener'},
-                    {'label': 'Market Cap (TAO)', 'value': 'market_cap_proxy'},
+                    {'label': 'Market Cap (TAO)', 'value': 'market_cap_tao'},
                     {'label': '7d Price % Change', 'value': 'price_7d_pct_change'}
                 ],
                 value='score',
@@ -66,7 +66,7 @@ def init_dashboard(server, cache):
             y=selected_metric,
             title=f"Top 15 Subnets by {selected_metric.replace('_', ' ').title()}",
             labels={selected_metric: selected_metric.replace('_', ' ').title()},
-            hover_data=['netuid', 'tao_in_screener', 'market_cap_proxy', 'price_screener', 'score']
+            hover_data=['netuid', 'market_cap_tao', 'alpha_circ', 'price_screener', 'score']
         )
         table_columns = [{"name": col, "id": col} for col in df_sorted.columns]
         table_data = df_sorted.to_dict("records")
