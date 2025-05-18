@@ -21,10 +21,10 @@ def blog_index():
 @main.route('/blog/<slug>')
 @limiter.limit(RATE_LIMITS["blog"])
 def blog_post(slug):
-    html, title = load_blog_post(slug)
-    if not html:
+    html, metadata = load_blog_post(slug)
+    if html is None:
         abort(404)
-    return render_template('blog_post.html', title=title, content=html)
+    return render_template('blog_post.html', content=html, metadata=metadata)
 
 @main.route('/health')
 @limiter.exempt  # Health checks should never be rate limited
@@ -33,7 +33,12 @@ def health_check():
 
 @main.route('/about-bittensor')
 def about_bittensor():
-    return redirect(url_for('main.blog_post', slug='06-what_is_bittensor'))
+    return redirect(url_for('main.blog_post', slug='06_bittensor_explained'))
+
+@main.route('/blog/06-what_is_bittensor')
+@limiter.limit(RATE_LIMITS["blog"])
+def old_bittensor_explanation():
+    return redirect(url_for('main.blog_post', slug='06_bittensor_explained'))
 
 @main.app_errorhandler(404)
 def not_found_error(error):

@@ -34,3 +34,4 @@ certifi==2025.4.26
 charset-normalizer==3.4.2
 idna==3.10
 greenlet==3.0.3  # Required for SQLAlchemy async support
+pyyaml==6.0.1

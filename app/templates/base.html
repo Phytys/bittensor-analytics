@@ -4,15 +4,20 @@
   <meta charset="UTF-8">
   <title>{% block title %}{{ title }}{% endblock %} - Bittensor Subnet Analytics</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <!-- Default Meta Tags -->
   <meta name="description" content="Explore Bittensor's decentralized AI marketplace through real-time subnet analytics and scoring models." />
   <meta name="keywords" content="bittensor, tao, decentralized AI, AI marketplace, subnet, analytics, crypto ai, open source" />
   
-  <!-- Open Graph / Social Media -->
+  <!-- Default Open Graph / Social Media -->
   <meta property="og:title" content="Bittensor Subnet Analytics" />
   <meta property="og:description" content="Visualize the decentralized AI economy with live data and research insights." />
   <meta property="og:image" content="/static/logo.png" />
   <meta property="og:url" content="https://bittensor-analytics-03fff415a1ae.herokuapp.com/" />
   <meta name="twitter:card" content="summary_large_image" />
+  
+  <!-- Custom Meta Tags -->
+  {% block meta %}{% endblock %}
   
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
   <link rel="stylesheet" href="/static/style.css">

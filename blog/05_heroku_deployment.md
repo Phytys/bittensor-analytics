@@ -1,3 +1,11 @@
+---
+title: "Chapter 5: Deployment and Going Public"
+date: "2024-03-20"
+description: "From development to production: deploying our Bittensor analytics dashboard on Heroku. Learn about our deployment stack, security measures, and the journey to making our tools publicly available."
+author: "Bittensor Analytics Team"
+tags: ["bittensor", "deployment", "heroku", "production", "security", "analytics", "dashboard", "web app", "infrastructure"]
+---
+
 # Chapter 5: Deployment and Going Public
 
 After days of building, iterating, and refining our data-driven insights platform, we reached a pivotal milestone: **it's time to share it with the world.**

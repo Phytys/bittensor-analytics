@@ -1,3 +1,11 @@
+---
+title: "Chapter 3: Subnet Scoring — Our First Model"
+date: "2024-03-20"
+description: "Building a scoring model for Bittensor subnets. Learn how we evaluate subnet health, sustainability, and potential through quantitative metrics and data-driven analysis."
+author: "Bittensor Analytics Team"
+tags: ["bittensor", "scoring", "analytics", "metrics", "subnet", "model", "data analysis", "sustainability", "health metrics"]
+---
+
 # Chapter 3: Subnet Scoring — Our First Model
 
 In the previous chapter, we examined the fundamental structure of each subnet — from its TAO holdings and price to metadata like GitHub links and community presence. Now, we take our first step into building something more opinionated:
