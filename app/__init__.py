@@ -4,6 +4,7 @@ from app.config import CACHE_TYPE, CACHE_DIR, CACHE_DEFAULT_TIMEOUT
 from app.views import main
 from app.dash_app import init_dashboard
 from app.limiter import limiter
+from app.models import init_db
 
 cache = Cache(config={
     'CACHE_TYPE': CACHE_TYPE,
@@ -21,9 +22,19 @@ def add_security_headers(response):
 
 def create_app():
     app = Flask(__name__)
+    
+    # Initialize extensions
     cache.init_app(app)
     limiter.init_app(app)
+    
+    # Initialize database
+    with app.app_context():
+        init_db()
+    
+    # Register blueprints
     app.register_blueprint(main)
+    
+    # Initialize dashboard
     init_dashboard(app, cache)
     
     # Add security headers middleware

@@ -1,7 +1,39 @@
-venv
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.env
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+coverage.xml
+*.cover
+apy_collection_test.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Project specific
 wallets.txt
 PLAN.md
 tao_app_api_doc.json
-__pycache__
-cache
+cache/
+data/
+wallet.txt
 *.db
+.python-version
+
+# Logs
+*.log
+logs/

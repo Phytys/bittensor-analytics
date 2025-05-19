@@ -103,12 +103,15 @@ bittensor-dashboard/
 │   ├── config.py          # Env config
 │   ├── static/            # Logo, favicon, CSS
 │   └── templates/         # HTML pages
+├── tests/                 # Test suite
+│   ├── __init__.py       # Makes tests a package
+│   └── test_fundamentals.py  # APY collection tests
 ├── blog/                  # Markdown blog posts (book chapters)
 ├── requirements.txt       # Dependency list
-├── Procfile               # Heroku startup instruction
-├── runtime.txt            # Python version (optional)
-├── wsgi.py                # Production WSGI entry point
-└── README.md              # This file
+├── Procfile              # Heroku startup instruction
+├── runtime.txt           # Python version (optional)
+├── wsgi.py               # Production WSGI entry point
+└── README.md             # This file
 ```
 
 ---
