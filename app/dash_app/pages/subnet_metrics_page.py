@@ -72,7 +72,8 @@ def layout():
     # Tagline for the chart
     chart_tagline = html.Div(
         "Boxplot shows the range of APY (Annual Percentage Yield) earned by validators in each subnet. "
-        "APY reflects the annualized return for staking with a validator. Wider boxes mean more variation in rewards among validators within a subnet.",
+        "APY reflects the annualized return for staking with a validator. Wider boxes mean more variation in rewards among validators within a subnet. "
+        "You can zoom and pan on the graph for a closer look.",
         style={
             "color": "#1976d2",
             "fontWeight": "500",
@@ -95,7 +96,7 @@ def layout():
         dcc.Loading(
             type='circle',
             children=html.Div([
-                html.H3("📦 Subnet APY Distribution"),
+                html.H3("📦 Placeholder"),
                 dcc.Graph(id='apy-boxplot'),
             ])
         ),
@@ -167,7 +168,11 @@ dash.callback(
 def _build_apy_boxplot(log_value):
     df = load_all_validator_apy_df()
     apy_threshold = 500
-    filtered_df = df[df['alpha_apy'] < apy_threshold].copy()
+    # Remove zero APY rows
+    df = df[df['alpha_apy'] > 0]
+    # Only keep subnets with at least one nonzero APY
+    valid_subnets = df['netuid'].unique()
+    filtered_df = df[(df['alpha_apy'] < apy_threshold) & (df['netuid'].isin(valid_subnets))].copy()
     fig = px.box(
         filtered_df,
         x='netuid',

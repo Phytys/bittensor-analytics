@@ -10,6 +10,7 @@ from urllib3.util import Retry
 import random
 import pandas as pd
 from sqlalchemy import desc
+import plotly.express as px
 
 logger = logging.getLogger(__name__)
 
@@ -280,6 +281,30 @@ def load_all_validator_apy_df():
                     'alpha_apy': float(v['alpha_apy'])
                 })
     return pd.DataFrame(rows)
+
+def _build_apy_boxplot(log_value):
+    df = load_all_validator_apy_df()
+    apy_threshold = 500
+    # Remove zero APY rows
+    df = df[df['alpha_apy'] > 0]
+    # Only keep subnets with at least one nonzero APY
+    valid_subnets = df['netuid'].unique()
+    filtered_df = df[(df['alpha_apy'] < apy_threshold) & (df['netuid'].isin(valid_subnets))].copy()
+    fig = px.box(
+        filtered_df,
+        x='netuid',
+        y='alpha_apy',
+        points='all',
+        title='Validator APY Distribution by Subnet',
+        labels={
+            'netuid': 'Subnet ID',
+            'alpha_apy': 'Validator APY (%)',
+        },
+        template='plotly_white',
+        log_y='log' in log_value,
+    )
+    fig.update_layout(height=600, margin=dict(t=50, b=40, l=50, r=50))
+    return fig
 
 if __name__ == "__main__":
     # Configure logging
