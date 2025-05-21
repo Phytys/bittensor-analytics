@@ -13,25 +13,33 @@ _A clean, open-source dashboard and research journal for exploring Bittensor sub
 ## Features
 
 - 📊 **Interactive Dashboard**
+  - Modern, responsive design with Tesla-inspired aesthetics
+  - Collapsible sidebar navigation
   - Real-time subnet metrics visualization
   - Customizable metric selection
-  - Sortable data tables
+  - Sortable data tables with conditional formatting
   - Top subnet rankings
+  - Multi-tab interface with fundamentals analysis
+  - APY tracking and stake distribution metrics
+  - Economic sustainability indicators
+  - Mobile-friendly layout
 
 - 📚 **Research Blog**
   - Markdown-powered blog posts
   - Scoring methodology explained
   - Network trends and insights
+  - Protocol analysis and comparisons
 
 ---
 
 ## Tech Stack
 
 - **Backend**: Flask, SQLAlchemy
-- **Frontend**: Dash, Plotly
+- **Frontend**: Dash, Plotly, Bootstrap
 - **Database**: PostgreSQL (Heroku) / SQLite (Dev)
 - **Caching**: Flask-Caching (filesystem)
 - **Deployment**: Heroku (Gunicorn + WSGI)
+- **Styling**: Custom CSS with responsive design
 
 ---
 
@@ -96,20 +104,29 @@ bittensor-dashboard/
 ├── app/
 │   ├── __init__.py        # Flask app factory
 │   ├── views.py           # Flask routes (landing, blog)
-│   ├── dash_app.py        # Dash dashboard mounted at /dashboard
+│   ├── dash_app/          # Dashboard components
+│   │   ├── __init__.py    # Dash app initialization
+│   │   ├── layout.py      # Main dashboard layout
+│   │   └── pages/         # Dashboard pages
+│   │       ├── overview.py    # Overview metrics
+│   │       └── fundamentals.py # APY and fundamentals
+│   ├── fundamentals.py    # Subnet fundamental analysis
 │   ├── blog_utils.py      # Markdown rendering
 │   ├── logic.py           # Subnet scoring
 │   ├── utils.py           # API integration and caching
+│   ├── models.py          # Database models
 │   ├── config.py          # Env config
+│   ├── limiter.py         # Rate limiting
 │   ├── static/            # Logo, favicon, CSS
 │   └── templates/         # HTML pages
 ├── tests/                 # Test suite
 │   ├── __init__.py       # Makes tests a package
 │   └── test_fundamentals.py  # APY collection tests
 ├── blog/                  # Markdown blog posts (book chapters)
+├── data/                  # Data storage and cache
 ├── requirements.txt       # Dependency list
 ├── Procfile              # Heroku startup instruction
-├── runtime.txt           # Python version (optional)
+├── runtime.txt           # Python version
 ├── wsgi.py               # Production WSGI entry point
 └── README.md             # This file
 ```

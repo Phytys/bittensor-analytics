@@ -8,6 +8,8 @@ from app.config import TAO_API_BASE, TAO_APP_API_KEY, TAO_API_RATE_LIMIT
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import random
+import pandas as pd
+from sqlalchemy import desc
 
 logger = logging.getLogger(__name__)
 
@@ -219,34 +221,41 @@ def store_all_subnet_apy(start_netuid: int = 1, end_netuid: int = 64) -> Dict[in
     
     return all_results
 
-def get_latest_apy(netuid: Optional[int] = None) -> List[Dict]:
-    """
-    Get the latest APY record(s) from the database.
-    
-    Args:
-        netuid: Optional subnet ID to filter by
-        
-    Returns:
-        List of dicts containing latest APY data
-    """
+def get_latest_apy():
+    """Get the latest APY records for each subnet."""
     db_session = get_db()
     with db_session as db:
-        query = db.query(SubnetAPY)
-        
-        if netuid is not None:
-            query = query.filter(SubnetAPY.netuid == netuid)
-        
-        # Get latest record per netuid
-        latest_records = []
-        for record in query.order_by(SubnetAPY.recorded_at.desc()).all():
-            latest_records.append({
-                'netuid': record.netuid,
-                'apy': record.data.get('apy'),
-                'recorded_at': record.recorded_at,
-                'raw_data': record.data
-            })
-        
-        return latest_records
+        return db.query(SubnetAPY).order_by(desc(SubnetAPY.recorded_at)).all()
+
+def load_latest_apy_df():
+    """Load the latest APY data into a pandas DataFrame with additional metrics."""
+    records = get_latest_apy()
+    
+    if not records:
+        return pd.DataFrame()
+    
+    # Convert records to DataFrame
+    df = pd.DataFrame([{
+        'netuid': r.netuid,
+        'validator_count': len(r.data.get('validator_apys', [])),
+        'recorded_at': r.recorded_at,
+        'apy': r.data.get('apy')
+    } for r in records])
+    
+    # Calculate additional metrics
+    metrics = df.groupby('netuid').agg({
+        'apy': ['min', 'max', 'mean', 'median', 'std']
+    }).reset_index()
+    
+    metrics.columns = ['netuid', 'min_apy', 'max_apy', 'mean_apy', 'median_apy', 'std_apy']
+    
+    # Merge metrics with main DataFrame
+    df = df.merge(metrics, on='netuid', how='left')
+    
+    # Drop the raw APY column
+    df = df.drop('apy', axis=1)
+    
+    return df
 
 if __name__ == "__main__":
     # Configure logging
