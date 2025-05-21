@@ -78,7 +78,7 @@ def get_layout():
                     style={"color": "white", "padding": "0.5rem 1rem", "margin": "0.2rem 0"}
                 ),
                 dcc.Link(
-                    "Fundamentals",
+                    "Subnet Metrics",
                     href="/dashboard/fundamentals",
                     className="nav-link",
                     style={"color": "white", "padding": "0.5rem 1rem", "margin": "0.2rem 0"}

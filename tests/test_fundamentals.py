@@ -1,7 +1,7 @@
 import logging
 import os
 from sqlalchemy import inspect
-from app.fundamentals import store_all_subnet_apy, get_latest_apy
+from app.subnet_metrics import store_all_subnet_apy, get_latest_apy
 from app.models import get_db, SubnetAPY, init_db, Base, engine
 from datetime import datetime, timedelta
 import pandas as pd

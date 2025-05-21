@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Any
 from app.models import SubnetAPY, get_db
 from app.config import TAO_API_BASE, TAO_APP_API_KEY, TAO_API_RATE_LIMIT
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+from urllib3.util import Retry
 import random
 import pandas as pd
 from sqlalchemy import desc
@@ -228,34 +228,58 @@ def get_latest_apy():
         return db.query(SubnetAPY).order_by(desc(SubnetAPY.recorded_at)).all()
 
 def load_latest_apy_df():
-    """Load the latest APY data into a pandas DataFrame with additional metrics."""
+    """Load the latest APY data into a pandas DataFrame with additional metrics aggregated from all validators."""
     records = get_latest_apy()
-    
     if not records:
         return pd.DataFrame()
-    
-    # Convert records to DataFrame
-    df = pd.DataFrame([{
-        'netuid': r.netuid,
-        'validator_count': len(r.data.get('validator_apys', [])),
-        'recorded_at': r.recorded_at,
-        'apy': r.data.get('apy')
-    } for r in records])
-    
-    # Calculate additional metrics
-    metrics = df.groupby('netuid').agg({
-        'apy': ['min', 'max', 'mean', 'median', 'std']
-    }).reset_index()
-    
-    metrics.columns = ['netuid', 'min_apy', 'max_apy', 'mean_apy', 'median_apy', 'std_apy']
-    
-    # Merge metrics with main DataFrame
-    df = df.merge(metrics, on='netuid', how='left')
-    
-    # Drop the raw APY column
-    df = df.drop('apy', axis=1)
-    
-    return df
+
+    # Flatten all validator APYs into a DataFrame
+    rows = []
+    for r in records:
+        netuid = r.netuid
+        recorded_at = r.recorded_at
+        validator_apys = r.data.get('validator_apys', [])
+        for v in validator_apys:
+            if v.get('alpha_apy') is not None:
+                rows.append({
+                    'netuid': netuid,
+                    'recorded_at': recorded_at,
+                    'alpha_apy': float(v['alpha_apy'])
+                })
+
+    df = pd.DataFrame(rows)
+    if df.empty:
+        return pd.DataFrame()
+
+    # Group by subnet and calculate stats
+    metrics = df.groupby('netuid').agg(
+        min_apy=('alpha_apy', 'min'),
+        max_apy=('alpha_apy', 'max'),
+        mean_apy=('alpha_apy', 'mean'),
+        median_apy=('alpha_apy', 'median'),
+        std_apy=('alpha_apy', 'std'),
+        validator_count=('alpha_apy', 'count'),
+        recorded_at=('recorded_at', 'max')
+    ).reset_index()
+
+    return metrics
+
+def load_all_validator_apy_df():
+    """Return a DataFrame with all validator APYs, one row per validator per subnet."""
+    records = get_latest_apy()
+    rows = []
+    for r in records:
+        netuid = r.netuid
+        recorded_at = r.recorded_at
+        validator_apys = r.data.get('validator_apys', [])
+        for v in validator_apys:
+            if v.get('alpha_apy') is not None:
+                rows.append({
+                    'netuid': netuid,
+                    'recorded_at': recorded_at,
+                    'alpha_apy': float(v['alpha_apy'])
+                })
+    return pd.DataFrame(rows)
 
 if __name__ == "__main__":
     # Configure logging

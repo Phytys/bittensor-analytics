@@ -19,7 +19,7 @@ _A clean, open-source dashboard and research journal for exploring Bittensor sub
   - Customizable metric selection
   - Sortable data tables with conditional formatting
   - Top subnet rankings
-  - Multi-tab interface with fundamentals analysis
+  - Multi-tab interface with subnet metrics analysis
   - APY tracking and stake distribution metrics
   - Economic sustainability indicators
   - Mobile-friendly layout
@@ -109,8 +109,8 @@ bittensor-dashboard/
 │   │   ├── layout.py      # Main dashboard layout
 │   │   └── pages/         # Dashboard pages
 │   │       ├── overview.py    # Overview metrics
-│   │       └── fundamentals.py # APY and fundamentals
-│   ├── fundamentals.py    # Subnet fundamental analysis
+│   │       └── metrics.py     # Subnet metrics (APY, stats)
+│   ├── subnet_metrics.py  # Subnet metrics aggregation and APY logic
 │   ├── blog_utils.py      # Markdown rendering
 │   ├── logic.py           # Subnet scoring
 │   ├── utils.py           # API integration and caching
@@ -119,17 +119,28 @@ bittensor-dashboard/
 │   ├── limiter.py         # Rate limiting
 │   ├── static/            # Logo, favicon, CSS
 │   └── templates/         # HTML pages
+├── app/scripts/
+│   └── run_apy_warmup.py  # Script to collect and store APY data
 ├── tests/                 # Test suite
-│   ├── __init__.py       # Makes tests a package
-│   └── test_fundamentals.py  # APY collection tests
+│   ├── __init__.py        # Makes tests a package
+│   └── test_fundamentals.py  # APY collection tests (may be renamed)
 ├── blog/                  # Markdown blog posts (book chapters)
 ├── data/                  # Data storage and cache
 ├── requirements.txt       # Dependency list
-├── Procfile              # Heroku startup instruction
-├── runtime.txt           # Python version
-├── wsgi.py               # Production WSGI entry point
+├── Procfile               # Heroku startup instruction
+├── runtime.txt            # Python version
+├── wsgi.py                # Production WSGI entry point
 └── README.md             # This file
 ```
+
+---
+
+- The main dashboard page for subnet metrics is now `metrics.py` (was `fundamentals.py`).
+- The backend logic for subnet APY and metrics is in `subnet_metrics.py` (was `fundamentals.py`).
+- The APY warmup script is in `app/scripts/run_apy_warmup.py`.
+- Update test file names if you wish for consistency (e.g., `test_subnet_metrics.py`).
+
+If you have any questions or need to update other documentation, let me know!
 
 ---
 
