@@ -1,6 +1,6 @@
-# Bittensor Subnet Analytics
+# Bittensor Subnet Analytics Dashboard
 
-_A clean, open-source dashboard and research journal for exploring Bittensor subnet performance._
+_A modern, open-source dashboard and research journal for exploring Bittensor subnet performance, validator economics, and protocol analytics._
 
 ![Python](https://img.shields.io/badge/python-3.11-blue)
 ![Heroku](https://img.shields.io/badge/deployed-Heroku-green)
@@ -10,90 +10,41 @@ _A clean, open-source dashboard and research journal for exploring Bittensor sub
 
 ---
 
+## Table of Contents
+
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [File & Folder Overview](#file--folder-overview)
+- [Data Collection Pipeline](#data-collection-pipeline)
+- [Dash Pages & Visualizations](#dash-pages--visualizations)
+- [Flask Endpoints](#flask-endpoints)
+- [Security](#security)
+- [Local Development](#local-development)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+
+---
+
 ## Features
 
-- 📊 **Interactive Dashboard**
-  - Modern, responsive design with Tesla-inspired aesthetics
-  - Collapsible sidebar navigation
-  - Real-time subnet metrics visualization
-  - Customizable metric selection
-  - Sortable data tables with conditional formatting
-  - Top subnet rankings
-  - Multi-tab interface with subnet metrics analysis
-  - APY tracking and stake distribution metrics
-  - Economic sustainability indicators
-  - Mobile-friendly layout
-
-- 📚 **Research Blog**
-  - Markdown-powered blog posts
-  - Scoring methodology explained
-  - Network trends and insights
-  - Protocol analysis and comparisons
-
----
-
-## Tech Stack
-
-- **Backend**: Flask, SQLAlchemy
-- **Frontend**: Dash, Plotly, Bootstrap
-- **Database**: PostgreSQL (Heroku) / SQLite (Dev)
-- **Caching**: Flask-Caching (filesystem)
-- **Deployment**: Heroku (Gunicorn + WSGI)
-- **Styling**: Custom CSS with responsive design
-
----
-
-## Local Development
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/yourusername/bittensor-dashboard.git
-cd bittensor-dashboard
-```
-
-2. **Set up and activate a virtual environment**
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. **Install dependencies**
-```bash
-pip install -r requirements.txt
-```
-
-4. **Create a `.env` file**
-```bash
-echo "TAO_APP_API_KEY=your_api_key" >> .env
-echo "FLASK_ENV=development" >> .env
-echo "DATABASE_URL=sqlite:///tao_cache.db" >> .env
-```
-
-5. **Run the app locally**
-```bash
-python -m flask run
-```
-
-Visit `http://localhost:5000` in your browser.
-
----
-
-## Deployment (Heroku)
-
-The app is deployed to:
-
-🔗 [https://bittensor-analytics-03fff415a1ae.herokuapp.com](https://bittensor-analytics-03fff415a1ae.herokuapp.com)
-
-### Heroku Setup Steps
-
-```bash
-heroku create your-app-name
-heroku addons:create heroku-postgresql:hobby-dev
-heroku config:set TAO_APP_API_KEY=your_key_here
-git push heroku main
-```
-
-Heroku will automatically detect Python and install via `requirements.txt`.
+- **Subnet Metrics Page:**
+  - APY distribution boxplots per subnet (with outlier filtering, log scale toggle)
+  - Scatter plot: Subnet mean APY vs. TAO market cap (color/size by price change)
+  - Validator distribution by org, vTrust, and stake (top 64, top 10 orgs)
+  - Emission rate chart: % of TAO emitted to subnet reward pool vs. market cap
+  - All charts use protocol-accurate metrics and language
+  - Responsive, professional UI with Plotly and Dash Bootstrap Components
+- **CoinGecko Integration:**
+  - Daily TAO price caching for accurate USD calculations
+- **Data Pipeline:**
+  - Aggregates, caches, and joins data from Bittensor APIs and CoinGecko
+  - Protocol-accurate APY, emission, and validator metrics
+- **Blog & Research:**
+  - Markdown-based blog for research posts and protocol analysis
+- **Security:**
+  - Rate limiting, API key management, secure error handling
 
 ---
 
@@ -102,58 +53,150 @@ Heroku will automatically detect Python and install via `requirements.txt`.
 ```
 bittensor-dashboard/
 ├── app/
-│   ├── __init__.py        # Flask app factory
-│   ├── views.py           # Flask routes (landing, blog)
-│   ├── dash_app/          # Dashboard components
-│   │   ├── __init__.py    # Dash app initialization
-│   │   ├── layout.py      # Main dashboard layout
-│   │   └── pages/         # Dashboard pages
-│   │       ├── overview.py    # Overview metrics
-│   │       └── metrics.py     # Subnet metrics (APY, stats)
-│   ├── subnet_metrics.py  # Subnet metrics aggregation and APY logic
-│   ├── blog_utils.py      # Markdown rendering
-│   ├── logic.py           # Subnet scoring
-│   ├── utils.py           # API integration and caching
-│   ├── models.py          # Database models
-│   ├── config.py          # Env config
-│   ├── limiter.py         # Rate limiting
-│   ├── static/            # Logo, favicon, CSS
-│   └── templates/         # HTML pages
-├── app/scripts/
-│   └── run_apy_warmup.py  # Script to collect and store APY data
-├── tests/                 # Test suite
-│   ├── __init__.py        # Makes tests a package
-│   └── test_fundamentals.py  # APY collection tests (may be renamed)
-├── blog/                  # Markdown blog posts (book chapters)
-├── data/                  # Data storage and cache
-├── requirements.txt       # Dependency list
-├── Procfile               # Heroku startup instruction
-├── runtime.txt            # Python version
-├── wsgi.py                # Production WSGI entry point
-└── README.md             # This file
+│   ├── __init__.py
+│   ├── views.py
+│   ├── dash_app/
+│   │   ├── __init__.py
+│   │   ├── layout.py
+│   │   └── pages/
+│   │       ├── overview.py
+│   │       └── subnet_metrics_page.py
+│   ├── subnet_metrics.py
+│   ├── blog_utils.py
+│   ├── logic.py
+│   ├── utils.py
+│   ├── models.py
+│   ├── config.py
+│   ├── limiter.py
+│   ├── static/
+│   ├── templates/
+│   └── scripts/
+│       ├── run_apy_warmup.py
+│       └── warmup_base.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_subnet_metrics.py
+│   └── test_utils.py
+├── blog/
+├── data/
+├── cache/
+├── requirements.txt
+├── Procfile
+├── runtime.txt
+├── wsgi.py
+├── README.md
 ```
 
 ---
 
-- The main dashboard page for subnet metrics is now `metrics.py` (was `fundamentals.py`).
-- The backend logic for subnet APY and metrics is in `subnet_metrics.py` (was `fundamentals.py`).
-- The APY warmup script is in `app/scripts/run_apy_warmup.py`.
-- Update test file names if you wish for consistency (e.g., `test_subnet_metrics.py`).
+## File & Folder Overview
 
-If you have any questions or need to update other documentation, let me know!
+### `app/`
+- Core logic, Dash app, and Flask backend.
+- `subnet_metrics.py`: Data aggregation and protocol metrics
+- `dash_app/pages/subnet_metrics_page.py`: Main subnet metrics dashboard page
+
+### `tests/`
+- Unit and integration tests for core logic and data collection.
+
+### `blog/`
+- Markdown blog posts and research articles.
+
+### `data/`, `cache/`
+- Local data storage and cache (including TAO price, API responses, and APY data).
+
+---
+
+## Data Collection Pipeline
+
+```
+[TAO.app API, CoinGecko API]
+     ↓
+[fetch_and_cache_json(), fetch_and_cache_tao_price()]
+     ↓
+[Cache Tables: subnet_info, subnet_screener, tao_price]
+     ↓
+[Aggregation: subnet_apy (validator-level, subnet-level), emission rates, price changes]
+     ↓
+[Dash/Flask: Visualizations, Tables, Endpoints]
+```
+- **APY data**: Aggregated per subnet, with validator-level stats (min, max, mean, median, std, count)
+- **TAO price**: Fetched daily from CoinGecko, cached for up to 1 year
+- **All USD calculations**: Use global TAO price for accuracy
+
+---
+
+## Dash Pages & Visualizations
+
+- **Overview**: High-level protocol stats, TAO price, and network summary
+- **Subnet Metrics**:
+  - APY distribution boxplots (per subnet, validator-level)
+  - Scatter: Subnet mean APY vs. TAO market cap (color/size by price change)
+  - Validator distribution by org, vTrust, and stake (top 64, top 10 orgs)
+  - Emission rate chart: % of TAO emitted to subnet reward pool vs. market cap
+  - All charts: Responsive, log scale toggles, outlier filtering, protocol-accurate tooltips
+- **Blog**: Markdown-based research posts and protocol analysis
+
+---
+
+## Flask Endpoints
+
+- `/` – Landing page
+- `/blog` – Blog index
+- `/blog/<slug>` – View blog post
+- `/health` – Health check
+- `/about-bittensor` – Redirects to main Bittensor blog post
+- `/api/tao_price` – Cached TAO price endpoint
+- `/api/subnet_metrics` – Aggregated subnet metrics (APY, emission, etc.)
 
 ---
 
 ## Security
 
-The app implements key protections:
+- Rate limiting (Flask-Limiter)
+- API key management (via `.env`)
+- Secure error pages
+- Dependency pinning (`requirements.txt`)
+- Never expose sensitive keys or credentials in logs or UI
 
-- ✅ HTTP security headers (HSTS, X-Frame, MIME-sniffing)
-- ✅ Rate limiting with Flask-Limiter
-- ✅ Environment variable validation
-- ✅ Secure API key and database access
-- ✅ Custom error pages (404, 500)
-- ✅ Pinned & audited dependencies
+---
+
+## Local Development
+
+```bash
+git clone https://github.com/yourusername/bittensor-dashboard.git
+cd bittensor-dashboard
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+# Set up .env with TAO_APP_API_KEY, COINGECKO_API_KEY, FLASK_ENV, DATABASE_URL
+python -m flask run
+```
+
+---
+
+## Deployment
+
+```bash
+heroku create your-app-name
+heroku addons:create heroku-postgresql:hobby-dev
+heroku config:set TAO_APP_API_KEY=your_key
+heroku config:set COINGECKO_API_KEY=your_key
+heroku config:set FLASK_ENV=production
+heroku config:set DATABASE_URL=your_db_url
+# Push code
+git push heroku main
+```
+
+---
+
+## Contributing
+
+Contributions are welcome! Please open issues or pull requests for bug fixes, new features, or documentation improvements.
+- Follow PEP8 and best practices for Python and Dash
+- Add/maintain docstrings and type hints
+- Write tests for new features (`tests/`)
+- Keep protocol language and metrics accurate
 
 ---
 
@@ -165,8 +208,9 @@ MIT License
 
 ## Contact
 
-X: [@_landgren_](https://twitter.com/_landgren_)  
+- Twitter/X: [@_landgren_](https://twitter.com/_landgren_)
+- For questions, open an issue or contact via Twitter/X
 
 ---
 
-_This app was built to explore, visualize, and communicate the evolving landscape of decentralized AI networks using Bittensor._ 
+_This dashboard is built to explore, visualize, and communicate the evolving landscape of decentralized AI networks using Bittensor. For a deep dive into subnet metrics, see our upcoming blog post._

@@ -13,6 +13,7 @@ def get_required_env(key: str, default=None):
 
 # === API Keys ===
 TAO_APP_API_KEY = get_required_env("TAO_APP_API_KEY")
+COINGECKO_API_KEY = os.environ.get('COINGECKO_API_KEY')
 
 # === API Base URL ===
 TAO_API_BASE = "https://api.tao.app"

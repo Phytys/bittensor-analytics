@@ -1,12 +1,13 @@
 import requests
 import pandas as pd
 from datetime import datetime, timedelta
-from sqlalchemy import create_engine, Column, Integer, Text, DateTime, desc
+from sqlalchemy import create_engine, Column, Integer, Text, DateTime, desc, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from app.config import TAO_API_BASE, TAO_APP_API_KEY, DATABASE_URI, CACHE_DEFAULT_TIMEOUT
+from app.config import TAO_API_BASE, TAO_APP_API_KEY, DATABASE_URI, CACHE_DEFAULT_TIMEOUT, COINGECKO_API_KEY
 from app.models import SubnetAPY, get_db
 from typing import List
+import ast
 
 # SQLAlchemy setup
 connect_args = {'check_same_thread': False} if DATABASE_URI.startswith('sqlite') else {}
@@ -24,6 +25,15 @@ class SubnetScreenerCache(Base):
     __tablename__ = 'subnet_screener'
     netuid = Column(Integer, primary_key=True, index=True)
     data = Column(Text)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+
+# --- TAO Price History Model ---
+class TaoPriceHistory(Base):
+    __tablename__ = 'tao_price_history'
+    id = Column(Integer, primary_key=True)
+    date = Column(DateTime, index=True)
+    price_usd = Column(Float)
+    source = Column(Text, default='coingecko')
     updated_at = Column(DateTime, default=datetime.utcnow)
 
 # Create tables
@@ -138,3 +148,32 @@ def get_cached_netuids() -> List[int]:
     with get_db() as db:
         netuids = [row.netuid for row in db.query(SubnetInfoCache).all()]
         return sorted(netuids)
+
+def load_cache_df(cache_model, fields=None, dtypes=None):
+    """
+    Load all rows from a cache model, parse the data column, and return a DataFrame.
+    Optionally select fields and enforce dtypes.
+    """
+    session = SessionLocal()
+    rows = session.query(cache_model).all()
+    session.close()
+    dicts = [ast.literal_eval(row.data) for row in rows]
+    df = pd.DataFrame(dicts)
+    if fields:
+        df = df[fields]
+    if dtypes:
+        for col, typ in dtypes.items():
+            if col in df.columns:
+                df[col] = df[col].astype(typ)
+    return df
+
+def get_tao_price_history(days=365):
+    """
+    Fetch TAO price history (daily close) for the past `days` days from the database.
+    Returns a pandas DataFrame with columns: date, price_usd.
+    """
+    session = SessionLocal()
+    rows = session.query(TaoPriceHistory).order_by(TaoPriceHistory.date.desc()).limit(days).all()
+    session.close()
+    data = [{'date': r.date, 'price_usd': r.price_usd} for r in rows]
+    return pd.DataFrame(data)

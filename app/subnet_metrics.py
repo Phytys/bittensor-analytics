@@ -269,29 +269,11 @@ def load_latest_apy_df():
 def load_all_validator_apy_df():
     """Return a DataFrame with all validator APYs, one row per validator per subnet."""
     records = get_latest_apy()
-    print("\n=== Raw Database Records ===")
-    print(f"Number of records: {len(records)}")
-    if records:
-        print("\nSample record data:")
-        print("Keys in data:", records[0].data.keys())
-        print("Validator APYs:", records[0].data.get('validator_apys', [])[:2])  # Show first 2 validators
-    
     rows = []
     for r in records:
         netuid = r.netuid
         recorded_at = r.recorded_at
         validator_apys = r.data.get('validator_apys', [])
-        print(f"\nProcessing netuid {netuid}:")
-        print(f"Number of validators: {len(validator_apys)}")
-        if validator_apys:
-            print("Sample validator data (first 2):")
-            for v in validator_apys[:2]:
-                print(f"  Hotkey: {v.get('hotkey')}")
-                print(f"  Name: {v.get('validator_name')}")
-                print(f"  APY: {v.get('alpha_apy')}")
-                print(f"  VTrust: {v.get('vtrust')}")
-                print("  ---")
-        
         for v in validator_apys:
             if v.get('alpha_apy') is not None:
                 # Set validator_name to 'No-name' if missing or empty
@@ -308,21 +290,7 @@ def load_all_validator_apy_df():
                     'alpha_stake': v.get('alpha_stake', 0),
                     'nominated_stake': v.get('nominated_stake', 0)
                 })
-    
     df = pd.DataFrame(rows)
-    print("\n=== Final DataFrame ===")
-    print(f"Shape: {df.shape}")
-    print("Columns:", df.columns.tolist())
-    if not df.empty:
-        print("\nSample data:")
-        print(df.head())
-        print("\nAPY stats:")
-        print(df['alpha_apy'].describe())
-        print("\nVTrust stats:")
-        print(df['vtrust'].describe())
-        print("\nUnique validator names:", df['validator_name'].nunique())
-        print("Sample validator names:", df['validator_name'].unique()[:5])
-    
     return df
 
 def _build_apy_boxplot(log_value):
@@ -362,43 +330,24 @@ def prepare_validator_distribution_data():
     try:
         # Get validator APY data
         validator_df = load_all_validator_apy_df()
-        print("\n=== Validator APY Data ===")
-        print(f"Shape: {validator_df.shape}")
-        print("Columns:", validator_df.columns.tolist())
-        print("\nSample data:")
-        print(validator_df.head())
-        
         if validator_df.empty:
-            print("Warning: No validator APY data available")
             return pd.DataFrame()
-
         # Ensure all missing/empty validator names are set to 'No-name'
         validator_df['validator_name'] = validator_df['validator_name'].fillna('No-name')
         validator_df.loc[validator_df['validator_name'].str.strip() == '', 'validator_name'] = 'No-name'
-
         # Add total_stake column
         validator_df['alpha_stake'] = pd.to_numeric(validator_df['alpha_stake'], errors='coerce').fillna(0)
         validator_df['nominated_stake'] = pd.to_numeric(validator_df['nominated_stake'], errors='coerce').fillna(0)
         validator_df['total_stake'] = validator_df['alpha_stake'] + validator_df['nominated_stake']
-
         # Get subnet info
         subnet_info = fetch_combined_subnet_data()
-        print("\n=== Subnet Info ===")
-        print(f"Shape: {subnet_info.shape}")
-        print("Columns:", subnet_info.columns.tolist())
-        print("\nSample data:")
-        print(subnet_info.head())
-        
         if subnet_info.empty:
-            print("Warning: No subnet info available")
             return pd.DataFrame()
-        
         # Select required columns and handle missing subnet names
         subnet_info = subnet_info[["netuid", "subnet_name_screener", "market_cap_tao"]].copy()
         subnet_info['subnet_name_screener'] = subnet_info['subnet_name_screener'].fillna(
             subnet_info['netuid'].astype(str) + " (Unnamed)"
         )
-        
         # Handle missing vtrust values by setting them to 0
         validator_df['vtrust'] = validator_df['vtrust'].fillna(0)
         # Sort by vtrust (desc), total_stake (desc), hotkey (asc) within each subnet
@@ -407,10 +356,8 @@ def prepare_validator_distribution_data():
         validator_df['rank'] = validator_df.groupby('netuid').cumcount() + 1
         # Mark only the first 64 as is_earning per subnet
         validator_df['is_earning'] = validator_df.groupby('netuid').cumcount() < 64
-        
         # Handle missing APY values
         validator_df['alpha_apy'] = validator_df['alpha_apy'].fillna(0)
-        
         # Join with subnet info
         merged_df = pd.merge(
             validator_df, 
@@ -418,39 +365,19 @@ def prepare_validator_distribution_data():
             on='netuid', 
             how='left'
         )
-        
-        print("\n=== After Join ===")
-        print(f"Shape: {merged_df.shape}")
-        print("Columns:", merged_df.columns.tolist())
-        print("\nSample data:")
-        print(merged_df.head())
-        
         # Handle any remaining missing values
         merged_df['market_cap_tao'] = merged_df['market_cap_tao'].fillna(0)
         merged_df['validator_name'] = merged_df['validator_name'].fillna('No-name')
         merged_df.loc[merged_df['validator_name'].str.strip() == '', 'validator_name'] = 'No-name'
-        
         # Add subnet-level statistics
         subnet_stats = merged_df.groupby('netuid').agg({
             'alpha_apy': ['mean', 'count'],
             'is_earning': 'sum'
         }).reset_index()
         subnet_stats.columns = ['netuid', 'subnet_mean_apy', 'validator_count', 'earning_count']
-        
-        print("\n=== Subnet Stats ===")
-        print(subnet_stats.head())
-        
         # Join subnet stats back to main dataframe
         merged_df = pd.merge(merged_df, subnet_stats, on='netuid', how='left')
-        
-        print("\n=== Final DataFrame ===")
-        print(f"Shape: {merged_df.shape}")
-        print("Columns:", merged_df.columns.tolist())
-        print("\nSample data:")
-        print(merged_df.head())
-        
         return merged_df
-        
     except Exception as e:
         print(f"Error preparing validator distribution data: {str(e)}")
         return pd.DataFrame()
