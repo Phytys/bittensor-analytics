@@ -1,3 +1,6 @@
+# THIS PROJECT IS NOT ACTIVE.
+
+
 # Bittensor Subnet Analytics Dashboard
 
 _A modern, open-source dashboard and research journal for exploring Bittensor subnet performance, validator economics, and protocol analytics._
